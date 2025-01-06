@@ -43,7 +43,6 @@ public class EnemySpawner : MonoBehaviour
             {
                 // Perform the selection after the delay
                 selectedType = SelectBasedOnRates(rates);
-                Debug.Log($"Selected number: {selectedType}");
 
                 // Reset the timer and waiting state
                 isWaiting = false;
@@ -57,7 +56,6 @@ public class EnemySpawner : MonoBehaviour
             // Generate a random delay between 0.8 and 2 seconds
             delay = Random.Range(0.8f, 2f);
             isWaiting = true;
-            Debug.Log($"Waiting for {delay} seconds...");
         }
     }
 
@@ -83,8 +81,7 @@ public class EnemySpawner : MonoBehaviour
                 return i;
             }
         }
-
-        return -1; // This should never be reached
+        return -1;
     }
 
     private void Spawner(int type)

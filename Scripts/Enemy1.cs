@@ -12,7 +12,7 @@ public class Enemy1 : MonoBehaviour
     void Update()
     {
         Vector3 cameraPosition = Camera.main.transform.position;
-        // Calculate the direction toward the camera and move
+        // Calculate the direction towards the camera and move
         Vector3 direction = (cameraPosition - transform.position).normalized;
         transform.position += direction * speed * Time.deltaTime;
     }
@@ -21,7 +21,7 @@ public class Enemy1 : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-            // Destroy this component logic when hitting an object tagged "Flame"
+            // Destroy component logic when hitting an object tagged "Flame"
             // Destroy the gameObject completely after 1s
             DisableCollider();
             PointManager.instance.UpdatePti(ppk);

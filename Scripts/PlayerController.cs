@@ -53,14 +53,10 @@ public class PlayerController : MonoBehaviour
 
     public async void HandleUpdate()
     {
-        //Debug.Log("entra qua dentro diocane");
         if (isTeleporting) {
-            Debug.Log("teleporting");
             await TimeoutBeforeReturn(0.1f);
             isTeleporting = false;
             isMoving = false;
-            Debug.Log(isTeleporting);
-            Debug.Log(isMoving);
             return;
         }
         if (!isMoving) 
@@ -79,14 +75,6 @@ public class PlayerController : MonoBehaviour
                 animator.SetFloat("MoveY", input.y);
 
                 var targetPosition = transform.position;
-                if(targetPosition.x > 50)
-                {
-                    Debug.Log("after teleport debug");
-                    Debug.Log(isTeleporting);
-                    Debug.Log(isMoving);
-                    Debug.Log(input.x);
-                    Debug.Log(input.y);
-                }
                 targetPosition.x += input.x;
                 targetPosition.y += input.y;
                 targetPosition.z = 0;
@@ -94,9 +82,7 @@ public class PlayerController : MonoBehaviour
                 if (isWalkable(targetPosition)) 
                 {
                    StartMyCoroutine(targetPosition);
-                    //rb.velocity = new Vector2(input.x * mvmSpeed, input.y * mvmSpeed); // Update velocity with movement speed
                     animator.SetBool("isMoving", true);
-                    //Debug.Log("position " + targetPosition);
                 }
                 else
                 {
@@ -105,16 +91,13 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
-
-        //animator.SetBool("isMoving", isMoving);
-
         if (Input.GetKeyDown(KeyCode.E))
         {
             Interact();
         }
     }
 
-    // Method to stop the coroutine
+    // Method to stop the walking coroutine (used when teleporting)
     public void StopMyCoroutine()
     {
         if (walkingCoroutine != null)
@@ -126,11 +109,6 @@ public class PlayerController : MonoBehaviour
 
     public void StartMyCoroutine(Vector3 v)
     {
-        // Ensure the coroutine doesn't start if the player is teleporting
-        /*if (!isTeleporting)
-        {
-            walkingCoroutine = StartCoroutine(Move(v));
-        }*/
         walkingCoroutine = StartCoroutine(Move(v));
     }
 
@@ -138,13 +116,8 @@ public class PlayerController : MonoBehaviour
     {
         var facingDirection = new Vector3(animator.GetFloat("MoveX"), animator.GetFloat("MoveY"));
         var interactPos = transform.position + facingDirection;
-
-        // debug 
-        //Debug.DrawLine(transform.position, interactPos, Color.red, 1f);
-
         var collider = Physics2D.OverlapCircle(interactPos, 0.2f, interact);
         if (collider != null) { 
-            // null checking
             collider.GetComponent<Interactable>()?.Interact();
         }
     }
@@ -152,7 +125,7 @@ public class PlayerController : MonoBehaviour
     private async Task TimeoutBeforeReturn(float timeout)
     {
         // Wait for the specified timeout
-        await Task.Delay((int)(timeout * 1000));  // Task.Delay takes milliseconds, so multiply by 1000
+        await Task.Delay((int)(timeout * 1000)); 
     }
 
     public IEnumerator Move(Vector3 targetPosition)
@@ -166,24 +139,6 @@ public class PlayerController : MonoBehaviour
         transform.position = targetPosition;
         isMoving = false;
     }
-    
-    /*
-    private IEnumerator Move(Vector3 targetPosition)
-    {
-        float timeToMove = 0.5f;
-        float elapsedTime = 0f;
-        Vector3 startingPosition = transform.position;
-
-        while (elapsedTime < timeToMove)
-        {
-            transform.position = Vector3.Lerp(startingPosition, targetPosition, elapsedTime / timeToMove);
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-
-        transform.position = targetPosition;
-    }
-    */
 
     public void Teleport(Vector3 targetPosition)
     {
@@ -191,17 +146,10 @@ public class PlayerController : MonoBehaviour
         StopMyCoroutine();
         isTeleporting = true;
         transform.position = targetPosition;
-        //animator.SetBool("isMoving", true);
-
-
-
         // Stop movement completely and reset velocities
-        Debug.Log("velocità iniziale: " + rb.velocity);
         rb.velocity = Vector3.zero;
-        Debug.Log("targetPosition: " + targetPosition);
         rb.angularVelocity = 0f;
         rb.constraints = RigidbodyConstraints2D.FreezePosition | RigidbodyConstraints2D.FreezeRotation; // Freeze position and rotation
-
         animator.SetFloat("MoveX", 0f);
         animator.SetFloat("MoveY", 0f);
         animator.SetBool("isMoving", false);
@@ -209,16 +157,6 @@ public class PlayerController : MonoBehaviour
         input.x = 0; // Reset horizontal input to 0
         input.y = 0; // Reset vertical input to 0
         isTeleporting = true;
-        // After a short delay, re-enable movement
-        //StartCoroutine(EnableMovement());  // 0.5 seconds delay, adjust as needed
-    }
-
-    private IEnumerator EnableMovement()
-    {
-        yield return null;
-        //isTeleporting = false;
-        //rb.velocity = new Vector3(mvmSpeed * Time.deltaTime, mvmSpeed * Time.deltaTime,0);
-        Debug.Log("isTeleporting: " + isTeleporting);
     }
 
     private bool isWalkable(Vector3 targetPosition)

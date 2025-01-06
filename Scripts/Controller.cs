@@ -10,11 +10,9 @@ public enum State
 public class Controller : MonoBehaviour
 {
     // game logic for interactable objs and walking
-    // var visible in inspector
     [SerializeField] PlayerController controller;
-
     State state;
-
+    
     private void Start()
     {
         DialogController.instance.onShow += () =>

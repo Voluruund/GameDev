@@ -22,7 +22,7 @@ public class DialogController : MonoBehaviour
         get; private set;
     }
 
-    // this becomes a public instance
+    // this becomes a public instance (singleton)
     private void Awake()
     {
         instance = this;

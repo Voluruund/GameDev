@@ -13,7 +13,6 @@ public class GameLevel : MonoBehaviour
         if (collision.tag == "Player" && !isLoadingScene)
         {
             isLoadingScene = true;
-            Debug.Log("Switching scene");
             SceneManager.sceneLoaded += OnSceneLoaded; // Subscribe to sceneLoaded event
             SceneManager.LoadScene(sceneIndex, LoadSceneMode.Single); // Load the new scene
         }
@@ -27,13 +26,10 @@ public class GameLevel : MonoBehaviour
         {
             // Move the player to the spawn point
             GameObject player = GameObject.FindWithTag("Player");
-            // Teleport the player to spawn point and make sure it’s at the exact position
             if (player != null)
             {
                 PlayerController playerController = player.GetComponent<PlayerController>();
-                Debug.Log("Player teleported to spawn point.");
                 playerController.Teleport(spawnPoint.transform.position);
-                Debug.Log("Diocane: " + spawnPoint.transform.position);
             }
         }
         else

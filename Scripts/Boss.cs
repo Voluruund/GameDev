@@ -43,7 +43,7 @@ public class Boss : MonoBehaviour
         }
     }
 
-    // Function to wait 3 seconds and then quits the application
+    // wait 3 seconds and then quits the application
     public void QuitAfterDelay()
     {
         StartCoroutine(Quit());
